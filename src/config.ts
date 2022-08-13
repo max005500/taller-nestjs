@@ -8,11 +8,9 @@ export default registerAs('config', () => {
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      ssl: true,
       extra: {
-        options: '--cluster=polite-dibbler-1643',
+        options: `--cluster=${process.env.DB_ID}`,
       },
-      synchronize: false,
     },
     database2: {},
     apiKey: process.env.API_KEY,

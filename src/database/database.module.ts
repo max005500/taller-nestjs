@@ -12,6 +12,9 @@ import config from '../config';
         return {
           ...configService.database,
           type: 'cockroachdb',
+          synchronize: false,
+          autoLoadEntities: true,
+          ssl: true,
         };
       },
       inject: [config.KEY],

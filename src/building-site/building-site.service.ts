@@ -1,51 +1,65 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { Repository } from 'typeorm';
+import {
+  CreateBuildingStDto,
+  UpdateBuildingStDto,
+} from './dtos/building-site.dto';
+
+import { BuildingSite } from './entities/building-site.entity';
 
 @Injectable()
 export class BuildingSiteService {
-  private obras = [
-    {
-      id: 1,
-      nombre: 'casja',
-      ubicacion: 'avenida siempre viva',
-      descripcion: 'obras sociales',
-    },
-    {
-      id: 2,
-      nombre: 'condominio Huasco-Miranda',
-      ubicacion: 'los fresnos',
-      descripcion: 'condominio privilegiado VIP',
-    },
-    {
-      id: 3,
-      nombre: 'hostal',
-      ubicacion: 'camino internacional',
-      descripcion: 'no somos canibales',
-    },
-  ];
+  constructor(
+    @InjectRepository(BuildingSite) private buildRepo: Repository<BuildingSite>,
+  ) {}
 
-  findAll() {
-    return this.obras;
+  async findAll() {
+    return await this.buildRepo.find();
   }
-  findOne(id: number) {
-    return this.obras.find((x) => x.id == id);
-  }
-  create(payload: any) {
-    return payload;
-  }
-  update(id: number, payload: any) {
-    const index = this.obras.findIndex((x) => x.id == id);
-    let newUpdate = {
-      ...this.obras[index],
-      ...payload,
-    };
-    return (this.obras[index] = newUpdate);
-  }
-  delete(id: number) {
-    this.obras = this.obras.filter((x) => x.id != id);
 
-    if (this.obras.some((x) => x.id == id)) {
-      return { message: 'info no borrada exitosamente' };
+  async findOne(id: string) {
+    const buildSt = await this.buildRepo.findOneBy({ id: id });
+    if (!buildSt) throw new NotFoundException(`build with id: ${id} not exist`);
+
+    return buildSt;
+  }
+
+  async create(payload: CreateBuildingStDto) {
+    try {
+      const buildSt = this.buildRepo.create(payload);
+      await this.buildRepo.save(buildSt);
+      return buildSt;
+    } catch (err) {
+      console.error(err);
+      throw new InternalServerErrorException(
+        'ocurrio un error mira la terminal para mas informacion',
+      );
     }
-    return { message: 'info borrada con exito ' };
+  }
+
+  async update(id: string, payload: UpdateBuildingStDto) {
+    try {
+      const buildSt = this.buildRepo.preload({ ...payload });
+
+      // await this.buildRepo.save(buildSt);
+      return buildSt;
+    } catch (err) {
+      console.error(err);
+      throw new InternalServerErrorException(
+        'ocurrio un error mira la terminal para mas informacion',
+      );
+    }
+  }
+
+  async delete(id: string) {
+    const buildSt = await this.findOne(id);
+    await this.buildRepo.remove(buildSt);
+    return { message: 'objeto borrado exitosamente' };
   }
 }

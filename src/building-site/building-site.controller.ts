@@ -3,49 +3,46 @@ import {
   Controller,
   Delete,
   Get,
-  Inject,
   Param,
-  ParseIntPipe,
+  ParseUUIDPipe,
+  Post,
   Put,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
-import { ConfigType } from '@nestjs/config';
-import config from '../config';
 
 import { BuildingSiteService } from './building-site.service';
+import {
+  CreateBuildingStDto,
+  UpdateBuildingStDto,
+} from './dtos/building-site.dto';
 
 @Controller('building-site')
 export class BuildingSiteController {
-  constructor(
-    @Inject(config.KEY)
-    private readonly confgiService: ConfigType<typeof config>,
-    private readonly buildingSiteService: BuildingSiteService,
-  ) {}
+  constructor(private readonly buildingSiteService: BuildingSiteService) {}
 
-  @Get('mensaje')
-  getMensaje() {
-    return {
-      message: this.confgiService.apiKey,
-    };
-  }
-  @Get('aves')
-  getAves() {
-    // return this.aves.data;
-  }
   @Get()
   getAll() {
     return this.buildingSiteService.findAll();
   }
-
   @Get(':id')
-  getById(@Param('id', ParseIntPipe) id: number) {
+  getById(@Param('id', ParseUUIDPipe) id: string) {
     return this.buildingSiteService.findOne(id);
   }
+  @Post()
+  create(@Body() payload: CreateBuildingStDto) {
+    return this.buildingSiteService.create(payload);
+  }
+
   @Put(':id')
-  updateById(@Param('id', ParseIntPipe) id: number, @Body() payload: any) {
+  updateById(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() payload: UpdateBuildingStDto,
+  ) {
     return this.buildingSiteService.update(id, payload);
   }
   @Delete(':id')
-  deleteById(@Param('id') id: number) {
+  deleteById(@Param('id', ParseUUIDPipe) id: string) {
     return this.buildingSiteService.delete(id);
   }
 }
