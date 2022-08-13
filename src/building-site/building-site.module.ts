@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { BuildingSiteService } from './building-site.service';
 import { BuildingSiteController } from './building-site.controller';
+import { BuildingSiteService } from './building-site.service';
 
 @Module({
+  imports: [],
   providers: [BuildingSiteService],
   controllers: [BuildingSiteController],
 })

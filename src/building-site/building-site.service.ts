@@ -5,7 +5,7 @@ export class BuildingSiteService {
   private obras = [
     {
       id: 1,
-      nombre: 'casa',
+      nombre: 'casja',
       ubicacion: 'avenida siempre viva',
       descripcion: 'obras sociales',
     },
@@ -22,6 +22,7 @@ export class BuildingSiteService {
       descripcion: 'no somos canibales',
     },
   ];
+
   findAll() {
     return this.obras;
   }
@@ -33,10 +34,18 @@ export class BuildingSiteService {
   }
   update(id: number, payload: any) {
     const index = this.obras.findIndex((x) => x.id == id);
-    return (this.obras[index] = payload);
+    let newUpdate = {
+      ...this.obras[index],
+      ...payload,
+    };
+    return (this.obras[index] = newUpdate);
   }
   delete(id: number) {
-    const index = this.obras.findIndex((x) => x.id == id);
-    return this.obras.slice(index, 1);
+    this.obras = this.obras.filter((x) => x.id != id);
+
+    if (this.obras.some((x) => x.id == id)) {
+      return { message: 'info no borrada exitosamente' };
+    }
+    return { message: 'info borrada con exito ' };
   }
 }
