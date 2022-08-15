@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { BuildingSiteModule } from './building-site/building-site.module';
 import { DatabaseModule } from './database/database.module';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 import * as Joi from 'joi';
 import config from './config';
 
@@ -25,6 +26,7 @@ import config from './config';
     }),
     DatabaseModule,
     UserModule,
+    AuthModule,
   ],
   providers: [],
   exports: [],
