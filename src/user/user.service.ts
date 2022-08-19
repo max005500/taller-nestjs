@@ -40,6 +40,14 @@ export class UserService {
     return userSt;
   }
 
+  async findOneByEmail(email: string) {
+    const userSt = await this.userRepo.findOneBy({ email: email });
+    if (!userSt)
+      throw new NotFoundException(`user with email: ${email} not exist`);
+
+    return userSt;
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto) {
     try {
       const userSt = await this.userRepo.preload({ id: id, ...updateUserDto });

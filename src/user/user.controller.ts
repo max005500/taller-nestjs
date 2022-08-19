@@ -12,10 +12,10 @@ import {
 
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './dto/create-user.dto';
-import { ApiKeyGuard } from 'src/auth/guards/api-key.guard';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { JwtguardGuard } from 'src/auth/guards/jwtguard.guard';
 
-@UseGuards(ApiKeyGuard)
+@UseGuards(JwtguardGuard)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
